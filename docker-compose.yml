@@ -1,0 +1,36 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.3
+    ports:
+    - "5433:5432"
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=goapi
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - default
+  app:
+    image: golang:1.12.5-alpine3.9
+    volumes:
+      - .:/go/src/github.com/ClementTeyssa/3PJT-API3/
+    working_dir: /go/src/github.com/ClementTeyssa/3PJT-API3/
+    command: go run main.go rooter.go
+    links:
+      - postgres
+    ports:
+      - "8283:8080"
+    labels:
+      - "traefik.docker.network=web"
+      - 'traefik.enable=true'
+      - "traefik.frontend.rule=Host:3pjt-api3.infux.fr"
+      - "traefikbasic.port=8283"
+    container_name: 3pjt-api3
+    networks:
+      - web
+      - default
+networks:
+  web:
+    external: true
