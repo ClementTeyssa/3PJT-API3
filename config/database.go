@@ -3,6 +3,8 @@ package config
 import (
 	"database/sql"
 	"log"
+
+	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
